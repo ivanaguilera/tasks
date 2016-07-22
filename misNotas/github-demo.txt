@@ -54,8 +54,66 @@ git rm makefile
 git status //mostrara archivo(makefile) como 
            //marcado para eliminar
 
-
+git commit lo confirma
 
 --------------------------------------------
+git checkout // descarta cambios
+
+git log // muestra historial de commits
+git log --oneline
+---------------------------------------------
+git branch nomRama  // crea la rama "nomRama"
+git branch // Muestra las ramas del proyecto
+           // y marca con * la rama en uso
+
+//para cambiarse a la rama de nombre "otraRama"
+git checkout otraRama
+---------------------------------------------
+git branch -d otraRama // borra la rama "otraRama"
+
+*************************************************
+Para volver a un commit especifico
+
+1 ejecutar git log --oneline //muestra cambios y
+                               su código (f703f5a)
+2 git checkout f703f5a
+
+*************************************************
+TAG
+  El tag le asigna un nombre mas facil de recordar 
+  a un codigo como (f703f5a) con un nombre como v1.0
+
+git tag v1.0  // crea el tag v1.0 a la posicion actual
+
+git tag v0.1 f703f5a // crea el tag v0.1 a la posicion
+                     //  f703f5a 
+
+git tag              // muestra los tag que existen
+
+v0.1
+v1.0
+
+*************************************************
+PUSH a Repositorios remotos
+
+
+parametros 
+
+$ git config --list
+  core.symlinks=false
+  core.autocrlf=true
+  core.fscache=true
+  color.diff=auto
+  color.status=auto
+  color.branch=auto
+  color.interactive=true
+  help.format=html
+  http.sslcainfo=C:/Program Files/Git/mingw64/ssl/certs/ca-bundle.crt
+  diff.astextplain.textconv=astextplain
+  rebase.autosquash=true
+  credential.helper=manager
+  user.name=John Doe
+  user.email=johndoe@example.com
+ 
 
 
