@@ -1,0 +1,255 @@
+<raiz-proyecto>/database/migrations: Ruta migraciones
+
+Crear Proyecto "gcom" gastos comunes
+------------------------------------------------------------------------------------
+1.-> composer create-project laravel/laravel gcom <return>
+------------------------------------------------------------------------------------
+2.-> conectar a la bd 
+     en .env
+
+------------------------------------------------------------------------------------
+3.-> php artisan make:migration add_categories_table --create=categories <return>
+     esto crea una migracion para crear la tabla Categories con un campo
+     id autoincremental y timestam creacion y update
+     entre estos agregar los que se requieren tales como
+
+     $table->string('name',66);  // string de largo 66 , si no se especifica 
+                                 //largo asume 255 
+
+     $table->integer('edad'); // normal
+
+     // Por Ej.: en la tabla de articulos FK con Usuarios 
+     $table->integer('user_id')->unsigned(); // para usar como llave foranea
+
+     $table->foreign('user_id')->reference('id')->on('users'); // constraint de llave foranea
+                    // Relaciona la columna 'user_id' con la columna 'id' de la tabla 'users'.
+     
+     $table->foreign('user_id')->reference('id')->on('users')->onDelete('cascade');// si borra usuario
+                    // borra los articulos relacionados con el. 
+
+------------------------------------------------------------------------------------
+4.-> php artisan migrate <return>
+     ejecuta la migracion
+
+------------------------------------------------------------------------------------
+5.-> php artisan make:model Category <return>  // mayuscula y minusculas en singular para el nombre  
+                                                  // crea archivo modelo Category.php 
+     <?php                                        // es el  
+       namespace App;
+       use Illuminate\Database\Eloquent\Model;
+       class Image extends Model
+       {
+          protected $table = "images";// "images" asocia clase Image con tabla "images" 
+                                                                 
+          protected $fillable = "images['name', 'article_id'];//campos editables
+          
+       } 
+
+
+------------------------------------------------------------------------------------
+6.-> tipos de relacion
+     
+     ******************	      
+     *** One To One ***
+     ******************
+
+/*
+  El usuario (Tabla User) tiene un telefono :
+*/
+<?php
+  
+  namespace App;
+
+  use Illuminate\Database\Eloquent\Model;
+
+  class User extends Model
+  {
+    /**
+     * Get the phone record associated with the user.
+     */
+    public function phone()
+    {
+        return $this->hasOne('App\Phone');
+    }
+  }
+
+
+/*
+  A su vez en el modelo de la tabla Phone se usa belongsTo para redefinir la
+  inversa de la relacion
+*/
+
+<?php
+
+  namespace App;
+
+  use Illuminate\Database\Eloquent\Model;
+
+  class Phone extends Model
+  {
+    /**
+     * Get the user that owns the phone.
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+  }
+
+
+
+   *******************
+   *** One To Many ***
+   *******************
+
+
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
+{
+    /**
+     * Get the comments for the blog post.
+     */
+    public function comments()
+    {
+        return $this->hasMany('App\Comment');
+    }
+}
+
+
+/*
+  A su vez en el modelo de la tabla Comment se usa belongsTo para redefinir la
+  inversa de la relacion
+*/
+
+
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Comment extends Model
+{
+    /**
+     * Get the post that owns the comment.
+     */
+    public function post()
+    {
+        return $this->belongsTo('App\Post');
+    }
+}
+------------------------------------------------------------------------------------
+7.-> las rutas estan en <raiz-proyecto>/App/Http/routes.php
+
+Route::get('/', function()
+{
+    return 'Hello World';
+});
+Route::post('foo/bar', function()
+{
+    return 'Hello World';
+});
+
+Route::put('foo/bar', function()
+{
+    //
+});
+
+Route::delete('foo/bar', function()
+{
+    //
+});
+
+Route::match(['get', 'post'], '/', function()
+{
+    return 'Hello World';
+});
+
+Route::any('foo', function()
+{
+    return 'Hello World';
+});
+
+------------------------------------------------------------------------------------
+8.   los controladores estan en <raiz-proyecto>/App/Http/Controllers
+  -> php artisan make:controller  TestController <return>
+
+*************************
+Controladores básicos ***
+*************************
+
+A continuación se muestra un ejemplo de una clase de controlador básica:
+
+<?php namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+
+class UserController extends Controller {
+
+    /**
+     * Mostrar el perfil de un usuario dado.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+
+    public function showProfile($id)
+    {
+        return view('user.profile', ['user' => User::findOrFail($id)]);
+    }
+
+}
+
+Podemos enrutar hacia la acción de un controlador así:
+
+Route::get('user/{id}', 'UserController@showProfile');
+
+Nota: Todos los controladores deben heredar de la clase controller base.
+
+   
+9.   Las Vistas estan en <raiz-proyecto>/resources/view
+     
+10.  ************
+     *** CRUD ***
+     ************
+     10.1 rutas        App/Http/routes.php
+     10.2 controlador
+     10.3 view  
+
+->  php artisan make:controller usersController --resources
+    // Genera conrolador con los metodos Index,create....
+
+-------------------------------------------------------------------------
+laravelcollective/HTML
+
+composer require laravelcollective/html
+-------------------------------------------------------------------------
+
+Route::group(['prefix'=>'admin'],function(){
+
+    Route::resource('users','UsersController');
+});
+
+
+al verificar con -> php artisan route:list
+
+# php artisan route:list
++--------+----------+-------------------------+------+-----------------------------------------------------------------+------------+
+| Domain | Method   | URI                     | Name | Action                                                          | Middleware |
++--------+----------+-------------------------+------+-----------------------------------------------------------------+------------+
+|        | GET|HEAD | /                       |      | Closure                                                         | web        |
+|        | GET|HEAD | home                    |      | App\Http\Controllers\HomeController@index                       | web,auth   |
+|        | GET|HEAD | login                   |      | App\Http\Controllers\Auth\AuthController@showLoginForm          | web,guest  |
+|        | POST     | login                   |      | App\Http\Controllers\Auth\AuthController@login                  | web,guest  |
+|        | GET|HEAD | logout                  |      | App\Http\Controllers\Auth\AuthController@logout                 | web        |
+|        | POST     | password/email          |      | App\Http\Controllers\Auth\PasswordController@sendResetLinkEmail | web,guest  |
+|        | POST     | password/reset          |      | App\Http\Controllers\Auth\PasswordController@reset              | web,guest  |
+|        | GET|HEAD | password/reset/{token?} |      | App\Http\Controllers\Auth\PasswordController@showResetForm      | web,guest  |
+|        | GET|HEAD | register                |      | App\Http\Controllers\Auth\AuthController@showRegistrationForm   | web,guest  |
+|        | POST     | register                |      | App\Http\Controllers\Auth\AuthController@register               | web,guest  |
++--------+----------+-------------------------+------+-----------------------------------------------------------------+------------+
