@@ -1,0 +1,61 @@
+git init  // prepara directorio para ser usado con git
+git status  // muestra estado de git
+
+git clone // para clonar repositorio de otra carpeta o en Internet
+
+//por ejemplo para clonar linux
+git clone http://github.com/torvalds/linux
+// no hacerlo demora horas
+
+git add  main.c
+git add  .  // agrega todos
+git status
+
+
+--------------------------------------------
+directorio de trabajo :
+es el directorio donde se crea el repositorio
+de git estan los archivos que se espera agregar 
+al repositorio en algun momento
+--------------------------------------------
+
+--------------------------------------------
+staging index:
+es el area temporal donde estan los archivos 
+que seran comiteados a git..
+--------------------------------------------
+
+--------------------------------------------
+1 modifcar archivo             (editar)
+2 agregarlo a staging index    (git add nomarchivo)
+si aqui ejecuto git status mostrara archivo
+que espera ser enviado a repositorio con commit
+
+3 confirmar para almacenar en repositorio 
+  (commit)
+
+git commit
+abre editor para escribir comentario sobre el cambio
+
+1 por que el cambio
+2 que se cambió
+3 que consecuencias se espera del cambio 
+
+--------------------------------------------
+
+--------------------------------------------
+si borramos un archivo(makefile) en la carpeta 
+
+git status //mostrara archivo como eliminado
+
+entonces debemos ejecutar
+git rm makefile
+
+git status //mostrara archivo(makefile) como 
+           //marcado para eliminar
+
+
+
+--------------------------------------------
+
+
